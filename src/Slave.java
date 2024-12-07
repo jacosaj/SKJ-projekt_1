@@ -1,5 +1,3 @@
-package slave;
-
 import java.net.*;
 
 public class Slave {

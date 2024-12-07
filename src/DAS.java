@@ -1,10 +1,9 @@
 //import master.Master;
-import slave.Slave;
 
 public class DAS {
     public static void main(String[] args) {
         if (args.length != 2) {
-            System.out.println("Usage: java DAS <port> <number>");
+            System.out.println("Program uruchamiamy poleceniem: java DAS <port> <number>");
             System.exit(1);
         }
 

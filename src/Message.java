@@ -1,5 +1,3 @@
-package slave;
-
 public class Message {
     public int index;
     public int size;
