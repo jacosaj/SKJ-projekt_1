@@ -6,9 +6,9 @@ import java.net.DatagramSocket;
  * Odpowiada za wysyłanie wiadomości do procesu Master na określonym porcie.
  */
 public class Slave {
-    private int port;
-    private int number;
-    private UDPHandler udpHandler;
+    private final int port;
+    private final int number;
+    private final UDPHandler udpHandler;
 
     /**
      * Tworzy obiekt klasy Slave.

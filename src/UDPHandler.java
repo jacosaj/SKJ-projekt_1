@@ -6,7 +6,7 @@ import java.net.*;
  * Odpowiada za wysyłanie i odbieranie wiadomości za pomocą protokołu UDP.
  */
 public class UDPHandler {
-    private DatagramSocket socket;
+    private final DatagramSocket socket;
 
     /**
      * Tworzy obiekt klasy UDPHandler z gniazdem UDP na określonym porcie.
