@@ -2,7 +2,16 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
+/**
+ * Główna klasa aplikacji, która uruchamia tryb Master lub Slave w zależności od dostępności portu.
+ * Obsługuje parametry wejściowe i decyduje, który tryb uruchomić.
+ */
 public class DAS {
+    /**
+     * Główna metoda programu.
+     *
+     * @param args parametry wejściowe: port i liczba
+     */
     public static void main(String[] args) {
         if (args.length != 2) {
             System.out.println("Użycie: java DAS <port> <number>");
@@ -21,10 +30,9 @@ public class DAS {
         }
 
         try {
-            // Próbujemy otworzyć port
             DatagramSocket socket = new DatagramSocket(port);
             System.out.println("Tryb: MASTER");
-            socket.close(); // Zamykamy, aby użyć ponownie w Master
+            socket.close();
             Master master = new Master(port, number);
             master.run();
         } catch (SocketException e) {

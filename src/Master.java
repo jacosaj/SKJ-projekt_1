@@ -1,22 +1,34 @@
 import java.io.IOException;
-import java.net.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.SocketException;
 
+/**
+ * Klasa reprezentująca tryb Master.
+ * Odpowiada za odbieranie i przetwarzanie wiadomości, obliczanie średnich oraz przesyłanie wyników.
+ */
 public class Master {
     private int port;
-    private int initialNumber;
     private UDPHandler udpHandler;
-    private List<Integer> receivedNumbers;
+    private MessageProcessor messageProcessor;
 
+    /**
+     * Tworzy obiekt klasy Master.
+     *
+     * @param port          numer portu, na którym aplikacja nasłuchuje.
+     * @param initialNumber początkowa wartość do przetwarzania.
+     * @throws SocketException jeśli nie można utworzyć gniazda UDP.
+     */
     public Master(int port, int initialNumber) throws SocketException {
         this.port = port;
-        this.initialNumber = initialNumber;
         this.udpHandler = new UDPHandler(port);
-        this.receivedNumbers = new ArrayList<>();
-        this.receivedNumbers.add(initialNumber); // Dodajemy początkową wartość
+        this.messageProcessor = new MessageProcessor(initialNumber); // Używamy MessageProcessor
     }
 
+    /**
+     * Uruchamia logikę trybu Master.
+     * Master odbiera wiadomości, przetwarza je, oblicza średnią i rozgłasza wyniki.
+     *
+     * @throws IOException jeśli wystąpi błąd podczas odbierania lub wysyłania wiadomości.
+     */
     public void run() throws IOException {
         System.out.println("Master działa na porcie: " + port);
 
@@ -25,7 +37,8 @@ public class Master {
             int receivedValue = Integer.parseInt(message.message);
 
             if (receivedValue == 0) {
-                int average = calculateAverage();
+                // Oblicz średnią za pomocą MessageProcessor
+                int average = messageProcessor.calculateAverage();
                 System.out.println("Średnia: " + average);
                 broadcastMessage(Integer.toString(average));
             } else if (receivedValue == -1) {
@@ -34,17 +47,18 @@ public class Master {
                 udpHandler.close();
                 break;
             } else {
-                System.out.println("Otrzymano liczbę: " + receivedValue);
-                receivedNumbers.add(receivedValue);
+                // Dodaj liczbę do MessageProcessor
+                messageProcessor.addValue(receivedValue);
             }
         }
     }
 
-    private int calculateAverage() {
-        int sum = receivedNumbers.stream().mapToInt(Integer::intValue).sum();
-        return (int) Math.floor((double) sum / receivedNumbers.size());
-    }
-
+    /**
+     * Rozsyła wiadomość do wszystkich klientów.
+     *
+     * @param message treść wiadomości do rozesłania.
+     * @throws IOException jeśli wystąpi błąd podczas wysyłania wiadomości.
+     */
     private void broadcastMessage(String message) throws IOException {
         Message broadcastMessage = new Message(0, message.length(), message);
         udpHandler.sendBroadcastMessage(port, broadcastMessage);
